@@ -12,7 +12,7 @@
         <button name="enviar" value="iniSesion">ENVIAR</button>
     </form>
 
-    <form action="registro.php" method="post">
+    <form action="index.php" method="post">
         <p>¿No tienes cuenta?</p>
         <button name="enviar" value="registro">Clic aquí</button>
     </form>
