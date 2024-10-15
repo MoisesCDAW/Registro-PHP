@@ -1,3 +1,5 @@
+<?php session_start();?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,5 +12,17 @@
         <button value="eliminarCuenta" name="enviar">Eliminar Cuenta</button>
         <button value="cerrarSesion" name="enviar">Cerrar Sesión</button>
     </form>
+
+    <?php 
+        if (isset($_SESSION["usuario"])) {
+            $datos = file_get_contents("../usuarios/".$_SESSION["usuario"].".json");
+            $datos = json_decode($datos);
+            foreach ($datos as $key => $value) {
+                if ($key!="password") {
+                    echo $key." : ".$value."<br>";
+                }
+            }
+        }
+    ?>
 </body>
 </html>
