@@ -8,21 +8,32 @@
     <title>Operaciones</title>
 </head>
 <body>
+
+    <?php 
+        if (isset($_SESSION["email"])) {
+            $email = $_SESSION["email"];
+            $rutaFoto = "";
+
+            $datos = file_get_contents("../../usuarios/".$email.".json");
+            $datos = json_decode($datos);
+            foreach ($datos as $key => $value) {
+                if ($key!="password" && $key!="rutaFoto") {
+                    echo $key." : ".$value."<br>";
+                }
+                if ($key=="rutaFoto") {
+                    $rutaFoto = $value;
+                }
+            }
+
+            echo "<img src='$rutaFoto' width='200px' height='200px''>";
+        }
+    ?>
+
+    <br>
+
     <form action="logica.php" method="post">
         <button value="eliminarCuenta" name="enviar">Eliminar Cuenta</button>
         <button value="cerrarSesion" name="enviar">Cerrar Sesión</button>
     </form>
-
-    <?php 
-        if (isset($_SESSION["email"])) {
-            $datos = file_get_contents("../usuarios/".$_SESSION["email"].".json");
-            $datos = json_decode($datos);
-            foreach ($datos as $key => $value) {
-                if ($key!="password") {
-                    echo $key." : ".$value."<br>";
-                }
-            }
-        }
-    ?>
 </body>
 </html>

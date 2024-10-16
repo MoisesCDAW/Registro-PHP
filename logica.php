@@ -32,8 +32,8 @@ function validarDato($dato){
 }
 
 
-function validarFoto(){
-    $rutaFinal = "../img/" . basename($_FILES["fotoPerfil"]["name"]);
+function validarFoto($email){
+    $rutaFinal = "../img/" . $email . "." . strtolower(pathinfo($_FILES["fotoPerfil"]["name"],PATHINFO_EXTENSION));
     $tipoFoto = "";
     $valido = 1;
 
@@ -58,6 +58,8 @@ function validarFoto(){
         if ($valido) {
             if(!move_uploaded_file($_FILES["fotoPerfil"]["tmp_name"], $rutaFinal)){
                 return $valido=0;
+            }else{
+                return $rutaFinal;
             }
         }else {
             return $valido;
@@ -134,19 +136,22 @@ function validarRegistro(){
     }
 
     // Imagen
-    $aux = validarFoto();
-    if ($aux===0) {
-        array_push($errores, "Foto inválida");
+    $rutaFoto = validarFoto($email);
+    if ($rutaFoto===0) {
+        $valido = false;
+        array_push($errores, "Foto inválida");    
+    }else {
+        $_SESSION["rutaFoto"] = $rutaFoto;
     }
 
 
     // Guardado de datos o muestra de errores
     if ($valido) {
         $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
-        "password"=>$password];    
+        "password"=>$password, "rutaFoto"=>$rutaFoto];    
 
         $json = json_encode($datos);
-        file_put_contents("../usuarios/".$email .".json", json_encode($datos));
+        file_put_contents("../../usuarios/".$email .".json", json_encode($datos));
 
         $_SESSION["email"] = $email;
         header("location: operaciones.php");
@@ -173,10 +178,10 @@ function validarInicioSesion(){
         $password = validarDato($_POST["password"]);
     }
 
-    if (file_get_contents("../usuarios/".$email.".json")===false) {
+    if (file_get_contents("../../usuarios/".$email.".json")===false) {
         array_push($errores, "No existe usuario con ese email");
     }else {
-        $json = file_get_contents("../usuarios/".$email.".json");
+        $json = file_get_contents("../../usuarios/".$email.".json");
         $datos = (array) json_decode($json);
         $passwordValido = password_verify($password, $datos["password"]);
 
@@ -198,7 +203,8 @@ function validarInicioSesion(){
 }
 
 function eliminarCuenta(){
-    unlink("../usuarios/".$_SESSION["email"].".json");
+    unlink("../img/".$_SESSION["rutaFoto"]);
+    unlink("../../usuarios/".$_SESSION["email"].".json");
     header("location: index.php");
     die();
 }
