@@ -1,3 +1,5 @@
+<?php session_start();?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,7 +9,7 @@
 </head>
 <body>
     <form action="logica.php" method="post">
-        <input type="email" name="email" placeholder="email">
+        <input type="text" name="email" placeholder="email">
         <input type="password" name="password" placeholder="Contraseña">
         <button name="enviar" value="iniSesion">ENVIAR</button>
     </form>
@@ -16,5 +18,12 @@
         <p>¿No tienes cuenta?</p>
         <button name="enviar" value="registro">Clic aquí</button>
     </form>
+
+    <?php 
+        if (isset($_SESSION["errores"])) {
+            print_r($_SESSION["errores"]);
+            unset($_SESSION["errores"]);
+        } 
+    ?>
 </body>
 </html>

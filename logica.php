@@ -104,9 +104,9 @@ function validarRegistro(){
         "password"=>$password];    
 
         $json = json_encode($datos);
-        file_put_contents("../usuarios/".$nombre.".json", json_encode($datos));
+        file_put_contents("../usuarios/".$email .".json", json_encode($datos));
 
-        $_SESSION["usuario"] = $nombre;
+        $_SESSION["email"] = $email;
         header("location: operaciones.php");
         die();
     }else {
@@ -119,16 +119,50 @@ function validarRegistro(){
 
 
 function validarInicioSesion(){
-    header("location: operaciones.php");
-    die();
+    $email = $password = "";
+    $json = "";
+    $datos = [];
+    $valido = true;
+    $errores = [];
+
+    // Seguridad de datos
+    if ($_SERVER["REQUEST_METHOD"]=="POST") {
+        $email = validarDato($_POST["email"]);
+        $password = validarDato($_POST["password"]);
+    }
+
+    if (file_get_contents("../usuarios/".$email.".json")===false) {
+        array_push($errores, "No existe usuario con ese email");
+    }else {
+        $json = file_get_contents("../usuarios/".$email.".json");
+        $datos = (array) json_decode($json);
+        $passwordValido = password_verify($password, $datos["password"]);
+
+        if ($datos["email"]==$email && $passwordValido) {
+            $_SESSION["email"] = $email;
+        }else {
+            array_push($errores, "Contraseña incorrecta");
+        }
+    }
+
+    if (count($errores)>0) {
+        $_SESSION["errores"] = $errores;
+        header("location: iniciosesion.php");
+        die();
+    }else {
+        header("location: operaciones.php");
+        die();
+    }
 }
 
 function eliminarCuenta(){
+    unlink("../usuarios/".$_SESSION["email"].".json");
     header("location: index.php");
     die();
 }
 
 function cerrarSesion(){
+    unset($_SESSION["email"]);
     header("location: iniciosesion.php");
     die();
 }

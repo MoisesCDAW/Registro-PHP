@@ -14,8 +14,8 @@
     </form>
 
     <?php 
-        if (isset($_SESSION["usuario"])) {
-            $datos = file_get_contents("../usuarios/".$_SESSION["usuario"].".json");
+        if (isset($_SESSION["email"])) {
+            $datos = file_get_contents("../usuarios/".$_SESSION["email"].".json");
             $datos = json_decode($datos);
             foreach ($datos as $key => $value) {
                 if ($key!="password") {
