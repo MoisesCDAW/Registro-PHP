@@ -32,6 +32,41 @@ function validarDato($dato){
 }
 
 
+function validarFoto(){
+    $rutaFinal = "../img/" . basename($_FILES["fotoPerfil"]["name"]);
+    $tipoFoto = "";
+    $valido = 1;
+
+    if ($_FILES["fotoPerfil"]["name"]!="") {
+        if (getimagesize($_FILES["fotoPerfil"]["tmp_name"])==false) { // Si no se puede saber el tamaño de la imagen, no es imagen
+            $valido = 0;
+        }
+    
+        if (file_exists($rutaFinal)) {
+            $valido = 0;
+        }
+    
+        if ($_FILES["fotoPerfil"]["size"] > 10000000) { // max: 10 Megabytes
+            $uploadOk = 0;
+        }
+    
+        $tipoFoto = $_FILES["fotoPerfil"]["type"];
+        if($tipoFoto != "image/png" && $tipoFoto != "image/jpg" && $tipoFoto != "image/jpeg") {
+            $uploadOk = 0;
+        }
+    
+        if ($valido) {
+            if(!move_uploaded_file($_FILES["fotoPerfil"]["tmp_name"], $rutaFinal)){
+                return $valido=0;
+            }
+        }else {
+            return $valido;
+        }
+    }
+    
+}
+
+
 function validarRegistro(){
     $nombre = $apellidos = $email = $fechaNac = $password = $passwordReplic = "";
     $json = "";
@@ -82,7 +117,7 @@ function validarRegistro(){
 
     // Contraseña
     if ($password==$passwordReplic) {
-        $expresion = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,15}$/";
+        $expresion = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?])([A-Za-z\d$@$!%*?]|[^ ]){8,15}$/";
         if (!preg_match($expresion, $password)) {
             $password = "";
             $passwordReplic = "";
@@ -97,6 +132,13 @@ function validarRegistro(){
         $valido = false;
         array_push($errores, "Las contraseñas tienen que ser iguales");
     }
+
+    // Imagen
+    $aux = validarFoto();
+    if ($aux===0) {
+        array_push($errores, "Foto inválida");
+    }
+
 
     // Guardado de datos o muestra de errores
     if ($valido) {

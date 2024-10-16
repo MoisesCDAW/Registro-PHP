@@ -8,7 +8,7 @@
     <title>Registro</title>
 </head>
 <body>
-    <form action="logica.php" method="post">
+    <form action="logica.php" method="post" enctype="multipart/form-data">
         <input type="text" name="nombre" placeholder="Nombre">
         <input type="text" name="apellidos" placeholder="Apellidos">
         <input type="text" name="email" placeholder="email">
