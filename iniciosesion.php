@@ -14,6 +14,14 @@
         <button name="enviar" value="iniSesion">ENVIAR</button>
     </form>
 
+    <?php     
+        unset($_SESSION["email"]);
+        unset($_SESSION["nombre"]);
+        unset($_SESSION["apellidos"]);
+        unset($_SESSION["email"]);
+        unset($_SESSION["fecha"]);
+    ?>
+
     <form action="index.php" method="post">
         <p>¿No tienes cuenta?</p>
         <button name="enviar" value="registro">Clic aquí</button>

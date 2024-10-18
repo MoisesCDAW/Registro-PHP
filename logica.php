@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+
+/**
+ * Comprueba que botón ha pulsado el usuario
+ */
 function inicio (){
     if (isset($_POST["enviar"])) {
         $operacion = $_POST["enviar"];
@@ -24,6 +28,10 @@ function inicio (){
 
 inicio ();
 
+
+/**
+ * Usada para sanear los datos ingresados por el usuario
+ */
 function validarDato($dato){
     $dato = trim($dato);
     $dato = stripcslashes($dato);
@@ -32,10 +40,17 @@ function validarDato($dato){
 }
 
 
+/**
+ * Valida la foto subida por el usuario
+ * 1. Comprueba que no esté vacío
+ * 2. Comprueba que la foto cumpla los requisitos
+ * 3. Guarda un por defecto si lo anterior no se cumple
+ */
 function validarFoto($email){
     $rutaFinal = "../img/" . $email . "." . strtolower(pathinfo($_FILES["fotoPerfil"]["name"],PATHINFO_EXTENSION));
     $tipoFoto = "";
     $valido = 1;
+    $rutaFotoPorDefecto = "../img/porDefecto.png";
 
     if ($_FILES["fotoPerfil"]["name"]!="") {
         if (getimagesize($_FILES["fotoPerfil"]["tmp_name"])==false) { // Si no se puede saber el tamaño de la imagen, no es imagen
@@ -62,19 +77,32 @@ function validarFoto($email){
                 return $rutaFinal;
             }
         }else {
-            return $valido;
+            return $valida;
         }
+    }else{
+        return $rutaFotoPorDefecto;
     }
     
 }
 
 
+/**
+ * Valida los datos de registro que ingresa el usuario:
+ * 1. Sanea los datos ingresados
+ * 2. Comprueba que el nombre solo sean letras
+ * 3. Comprueba que los apellidos solo sean letras
+ * 4. Usa FILTER_VALIDATE_EMAIL para validar el email
+ * 5. Comprueba que la fecha cumpla los requisitos
+ * 6. Comprueba que la contraseña cumpla los requisitos
+ * 7. Comprueba que la foto cumpla los requisitos. Agrega una por defecto si no agrega foto o es inválida
+ */
 function validarRegistro(){
     $nombre = $apellidos = $email = $fechaNac = $password = $passwordReplic = "";
     $json = "";
     $datos = [];
     $valido = true;
     $errores = [];
+    $yearMinimo = 1920;
 
     // Seguridad de datos
     if ($_SERVER["REQUEST_METHOD"]=="POST") {
@@ -95,26 +123,49 @@ function validarRegistro(){
     if (!preg_match("/^[a-zA-Z]+$/", $nombre)) {
         $nombre = "";
         $valido = false;
-        array_push($errores, "El nombre no es correcto");
+        array_push($errores, "NOMBRE: Solo debe contener letras y no puede esta vacío");
+        unset($_SESSION["nombre"]);
+    }else {
+        $_SESSION["nombre"] = $nombre;
     }
 
     // Apellidos
     if (!preg_match("/^[a-zA-Z-' ]+$/", $apellidos)) {
         $apellidos = "";
         $valido = false;
-        array_push($errores, "Los apellidos no son correctos");
+        array_push($errores, "APELLIDOS: Solo debe contener letras y no pueden estar vacíos");
+        unset($_SESSION["apellidos"]);
+    }else {
+        $_SESSION["apellidos"] = $apellidos;
     }
 
     // Email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $email = "";
         $valido = false;
-        array_push($errores, "El email no es correcto");
+        array_push($errores, "EMAIL: Debe tener un formato válido: nombre@dominio.extensión y no estar vacío");
+        unset($_SESSION["email"]);
+    }else {
+        $_SESSION["email"] = $email;
     }
 
     // Fecha de Nacimiento
     if ($fechaNac!="") {
-        // ------------- PENDIENTE ----------------
+        $actual = date_create();
+        $fechaUsuario = date_create($fechaNac);
+
+        if ($fechaUsuario>$actual || date_format($fechaUsuario, "Y")<$yearMinimo) {
+            $fechaNac = "";
+            $valido = false;
+            array_push($errores, "FECHA: Debe tener un max de 105 años y min la actual");
+        }else{
+            $_SESSION["fecha"] = $fechaNac;
+        }
+
+    }else{
+        $fechaNac = "";
+        $valido = false;
+        array_push($errores, "FECHA: No puede estar vacía");
     }
 
     // Contraseña
@@ -124,7 +175,7 @@ function validarRegistro(){
             $password = "";
             $passwordReplic = "";
             $valido = false;
-            array_push($errores, "La contraseña debe cumplir los requisitos");
+            array_push($errores, "CONTRASEÑA: Debe incluir entre 8 y 15 caracteres, al menos 1 mayús, 1 minús, 1 num, 1 caracter especial ($@$!%*?) y sin espacios");
         }else{
             $password = password_hash($password, PASSWORD_DEFAULT); // Encriptación
         }
@@ -132,39 +183,52 @@ function validarRegistro(){
         $password = "";
         $passwordReplic = "";
         $valido = false;
-        array_push($errores, "Las contraseñas tienen que ser iguales");
+        array_push($errores, "CONTRASEÑA: Tenen que ser iguales");
     }
 
     // Imagen
     $rutaFoto = validarFoto($email);
     if ($rutaFoto===0) {
         $valido = false;
-        array_push($errores, "Foto inválida");    
+        array_push($errores, "FOTO: Inválida");
     }else {
         $_SESSION["rutaFoto"] = $rutaFoto;
     }
 
 
     // Guardado de datos o muestra de errores
-    if ($valido) {
-        $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
-        "password"=>$password, "rutaFoto"=>$rutaFoto];    
-
-        $json = json_encode($datos);
-        file_put_contents("../../usuarios/".$email .".json", json_encode($datos));
-
-        $_SESSION["email"] = $email;
-        header("location: operaciones.php");
-        die();
-    }else {
+    if (file_get_contents("../../usuarios/".$email.".json")!==false) {
+        array_push($errores, "ERROR: Ese usuario ya existe");
         $_SESSION["errores"] = $errores;
         header("location: index.php");
         die();
+    }else{
+        if ($valido) {
+            $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
+            "password"=>$password, "rutaFoto"=>$rutaFoto];    
+    
+            $json = json_encode($datos);
+            file_put_contents("../../usuarios/".$email .".json", json_encode($datos));
+    
+            $_SESSION["email"] = $email;
+            header("location: iniciosesion.php");
+            die();
+        }else {
+            $_SESSION["errores"] = $errores;
+            header("location: index.php");
+            die();
+        }
     }
 
 }
 
 
+/**
+ * Valida que el inicio de sesión:
+ * 1. Sanea los datos ingresados
+ * 2. Que el email sea correcta comprobando que exista un archivo.json con ese email
+ * 3. Que la contraseña sea igual a la del archivo .json de su respectivo usuario
+ */
 function validarInicioSesion(){
     $email = $password = "";
     $json = "";
@@ -178,6 +242,7 @@ function validarInicioSesion(){
         $password = validarDato($_POST["password"]);
     }
 
+    // Comprobación que los datos existen
     if (file_get_contents("../../usuarios/".$email.".json")===false) {
         array_push($errores, "No existe usuario con ese email");
     }else {
@@ -192,6 +257,7 @@ function validarInicioSesion(){
         }
     }
 
+    // Redirección a operaciones.php o muestra de errores
     if (count($errores)>0) {
         $_SESSION["errores"] = $errores;
         header("location: iniciosesion.php");
@@ -202,15 +268,33 @@ function validarInicioSesion(){
     }
 }
 
+
+/**
+ * Elima la cuenta del usuario borrando la foto y su archivo .json
+ */
 function eliminarCuenta(){
-    unlink("../img/".$_SESSION["rutaFoto"]);
+    if ($_SESSION["rutaFoto"]!="../img/porDefecto.png") {
+        unlink($_SESSION["rutaFoto"]);
+    }
     unlink("../../usuarios/".$_SESSION["email"].".json");
+    unset($_SESSION["nombre"]);
+    unset($_SESSION["apellidos"]);
+    unset($_SESSION["email"]);
+    unset($_SESSION["fecha"]);
     header("location: index.php");
     die();
 }
 
+
+/**
+ * Cierra la sesión del usuario y elimina los datos que se autocompletan el formulario de registro
+ */
 function cerrarSesion(){
     unset($_SESSION["email"]);
+    unset($_SESSION["nombre"]);
+    unset($_SESSION["apellidos"]);
+    unset($_SESSION["email"]);
+    unset($_SESSION["fecha"]);
     header("location: iniciosesion.php");
     die();
 }
