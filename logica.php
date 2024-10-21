@@ -120,20 +120,20 @@ function validarRegistro(){
     // Validación de requisitos
 
     // Nombre
-    if (!preg_match("/^[a-zA-ZñÑáéíóúÁÉÍÓÚ' ]+$/", $nombre)) {
+    if (!preg_match("/^[a-zA-ZñÑáéíóúÁÉÍÓÚ' ]{1,15}$/", $nombre)) {
         $nombre = "";
         $valido = false;
-        array_push($errores, "NOMBRE: Solo debe contener letras y no puede esta vacío");
+        array_push($errores, "NOMBRE: Solo debe contener letras, Max: 15 caracteres y no puede esta vacío");
         unset($_SESSION["nombre"]);
     }else {
         $_SESSION["nombre"] = $nombre;
     }
 
     // Apellidos
-    if (!preg_match("/^[a-zA-ZñÑáéíóúÁÉÍÓÚ' ]+$/", $apellidos)) {
+    if (!preg_match("/^[a-zA-ZñÑáéíóúÁÉÍÓÚ' ]{1,30}$/", $apellidos)) {
         $apellidos = "";
         $valido = false;
-        array_push($errores, "APELLIDOS: Solo debe contener letras y no pueden estar vacíos");
+        array_push($errores, "APELLIDOS: Solo debe contener letras, Max: 30 caracteres y no pueden estar vacíos");
         unset($_SESSION["apellidos"]);
     }else {
         $_SESSION["apellidos"] = $apellidos;
@@ -183,7 +183,7 @@ function validarRegistro(){
         $password = "";
         $passwordReplic = "";
         $valido = false;
-        array_push($errores, "CONTRASEÑA: Tenen que ser iguales");
+        array_push($errores, "CONTRASEÑA: Tienen que ser iguales");
     }
 
     // Imagen

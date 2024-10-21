@@ -20,7 +20,7 @@
         <input type="text" name="nombre" value="<?php if (isset($_SESSION["nombre"])) {echo $_SESSION["nombre"];}?>" placeholder="Nombre">
         <input type="text" name="apellidos" value="<?php if (isset($_SESSION["apellidos"])) {echo $_SESSION["apellidos"];}?>" placeholder="Apellidos">
         <input type="text" name="email" value="<?php if (isset($_SESSION["email"])) {echo $_SESSION["email"];}?>" placeholder="email">
-        <input type="date" name="fechaNac" value="<?php if (isset($_SESSION["fecha"])) {echo $_SESSION["fecha"];}?>">
+        Mes/Día/Año: <input type="date" name="fechaNac" value="<?php if (isset($_SESSION["fecha"])) {echo $_SESSION["fecha"];}?>">
         <input type="password" name="password" placeholder="Contraseña">
         <input type="password" name="passwordReplic" placeholder="Repite la contraseña">
         Recom.: 200 x 200 <input type="file" name="fotoPerfil"><br><br>
