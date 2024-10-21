@@ -8,6 +8,26 @@
     <title>Registro</title>
 </head>
 <body>
+
+    <?php
+        // var_dump("Index: ".$_COOKIE["email"]);
+        // die();
+
+        if (isset($_COOKIE["email"])) {
+            $_SESSION["email"] = $_COOKIE["email"];
+            // header("location: operaciones.php");
+            // die();
+            // var_dump($_SESSION["email"]);
+            // die();
+        }else{
+            unset($_SESSION["email"]);
+            unset($_SESSION["nombre"]);
+            unset($_SESSION["apellidos"]);
+            unset($_SESSION["email"]);
+            unset($_SESSION["fecha"]);
+        }
+    ?>
+
     <form action="logica.php" method="post" enctype="multipart/form-data">
         <input type="text" name="nombre" value="<?php if (isset($_SESSION["nombre"])) {echo $_SESSION["nombre"];}?>" placeholder="Nombre">
         <input type="text" name="apellidos" value="<?php if (isset($_SESSION["apellidos"])) {echo $_SESSION["apellidos"];}?>" placeholder="Apellidos">
@@ -15,17 +35,9 @@
         <input type="date" name="fechaNac" value="<?php if (isset($_SESSION["fecha"])) {echo $_SESSION["fecha"];}?>">
         <input type="password" name="password" placeholder="Contraseña">
         <input type="password" name="passwordReplic" placeholder="Repite la contraseña">
-        <input type="file" name="fotoPerfil">
+        Recom.: 200 x 200 <input type="file" name="fotoPerfil"><br><br>
         <button name="enviar" value="registro">ENVIAR</button>
     </form>
-
-    <?php     
-        unset($_SESSION["email"]);
-        unset($_SESSION["nombre"]);
-        unset($_SESSION["apellidos"]);
-        unset($_SESSION["email"]);
-        unset($_SESSION["fecha"]);
-    ?>
 
     <form action="iniciosesion.php" method="post">
         <p>¿Ya tienes cuenta?</p>

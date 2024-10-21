@@ -47,10 +47,10 @@ function validarDato($dato){
  * 3. Guarda un por defecto si lo anterior no se cumple
  */
 function validarFoto($email){
-    $rutaFinal = "../img/" . $email . "." . strtolower(pathinfo($_FILES["fotoPerfil"]["name"],PATHINFO_EXTENSION));
+    $rutaFinal = "img/" . $email . "." . strtolower(pathinfo($_FILES["fotoPerfil"]["name"],PATHINFO_EXTENSION));
     $tipoFoto = "";
     $valido = 1;
-    $rutaFotoPorDefecto = "../img/porDefecto.png";
+    $rutaFotoPorDefecto = "img/porDefecto.png";
 
     if ($_FILES["fotoPerfil"]["name"]!="") {
         if (getimagesize($_FILES["fotoPerfil"]["tmp_name"])==false) { // Si no se puede saber el tamaño de la imagen, no es imagen
@@ -263,6 +263,23 @@ function validarInicioSesion(){
         header("location: iniciosesion.php");
         die();
     }else {
+
+        // Recordar usuario
+        if (isset($_POST["recordar"])) {
+            if ($_POST["recordar"]=="on") {
+                $_COOKIE["email"] = $email;
+                // var_dump($_COOKIE["email"]);
+                // die();
+            }
+
+        }else{
+            if (isset($_COOKIE["email"])) {
+                var_dump("InicioSesion: No existe la cookie");
+                die();
+                unset($_COOKIE["email"]);
+            }
+        }
+
         header("location: operaciones.php");
         die();
     }
@@ -273,7 +290,7 @@ function validarInicioSesion(){
  * Elima la cuenta del usuario borrando la foto y su archivo .json
  */
 function eliminarCuenta(){
-    if ($_SESSION["rutaFoto"]!="../img/porDefecto.png") {
+    if ($_SESSION["rutaFoto"]!="img/porDefecto.png") {
         unlink($_SESSION["rutaFoto"]);
     }
     unlink("../../usuarios/".$_SESSION["email"].".json");

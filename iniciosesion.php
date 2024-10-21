@@ -8,19 +8,21 @@
     <title>Inicio Sesion</title>
 </head>
 <body>
-    <form action="logica.php" method="post">
-        <input type="text" name="email" placeholder="email">
-        <input type="password" name="password" placeholder="Contraseña">
-        <button name="enviar" value="iniSesion">ENVIAR</button>
-    </form>
 
-    <?php     
+    <?php
         unset($_SESSION["email"]);
         unset($_SESSION["nombre"]);
         unset($_SESSION["apellidos"]);
         unset($_SESSION["email"]);
         unset($_SESSION["fecha"]);
     ?>
+
+    <form action="logica.php" method="post">
+        <input type="text" name="email" placeholder="email">
+        <input type="password" name="password" placeholder="Contraseña">
+        <button name="enviar" value="iniSesion">ENVIAR</button><br><br>
+        <input type="checkbox" name="recordar"> Recordar en este dispositivo
+    </form>
 
     <form action="index.php" method="post">
         <p>¿No tienes cuenta?</p>

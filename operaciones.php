@@ -10,6 +10,9 @@
 <body>
 
     <?php 
+        var_dump("Operaciones: ".$_COOKIE["email"]);
+        die();
+
         if (isset($_SESSION["email"])) {
             $email = $_SESSION["email"];
             $rutaFoto = "";
