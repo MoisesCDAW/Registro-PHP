@@ -10,10 +10,10 @@
 <body>
 
     <?php
-            unset($_SESSION["nombre"]);
-            unset($_SESSION["apellidos"]);
-            unset($_SESSION["email"]);
-            unset($_SESSION["fecha"]);
+        unset($_SESSION["nombre"]);
+        unset($_SESSION["apellidos"]);
+        unset($_SESSION["email"]);
+        unset($_SESSION["fecha"]);
     ?>
 
     <form action="logica.php" method="post" enctype="multipart/form-data">

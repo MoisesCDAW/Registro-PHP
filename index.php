@@ -24,7 +24,7 @@
 
     <form action="logica.php" method="post">
         <input type="text" name="email" placeholder="email">
-        <input type="password" name="password" placeholder="Contraseña">
+        <input type="password" name="password" placeholder="Contraseña"><br><br>
         <button name="enviar" value="iniSesion">ENVIAR</button><br><br>
         <input type="checkbox" name="recordar"> Recordar en este dispositivo
     </form>
@@ -36,7 +36,10 @@
 
     <?php 
         if (isset($_SESSION["errores"])) {
-            print_r($_SESSION["errores"]);
+            echo "<p style='font-size:18px;'>Errores detectados:</p>";
+            foreach ($_SESSION["errores"] as $key) {
+                echo $key."<br>";
+            }
             unset($_SESSION["errores"]);
         } 
     ?>

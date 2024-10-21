@@ -14,18 +14,23 @@
             $email = $_SESSION["email"];
             $rutaFoto = "";
 
-            $datos = file_get_contents("../../usuarios/".$email.".json");
-            $datos = json_decode($datos);
-            foreach ($datos as $key => $value) {
-                if ($key!="password" && $key!="rutaFoto") {
-                    echo $key." : ".$value."<br>";
-                }
-                if ($key=="rutaFoto") {
-                    $rutaFoto = $value;
+            if (file_exists("../../usuarios/".$email.".json")) {
+                $datos = file_get_contents("../../usuarios/".$email.".json");
+                $datos = json_decode($datos);
+                if ($datos != null && $datos!=false) {
+                    foreach ($datos as $key => $value) {
+                        if ($key!="password" && $key!="rutaFoto") {
+                            echo $key." : ".$value."<br>";
+                        }
+                        if ($key=="rutaFoto") {
+                            $rutaFoto = $value;
+                        }
+                    }
+        
+                    echo "<img src='$rutaFoto' width='200px' height='200px''>";
                 }
             }
-
-            echo "<img src='$rutaFoto' width='200px' height='200px''>";
+            
         }
     ?>
 

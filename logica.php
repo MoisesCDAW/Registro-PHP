@@ -62,12 +62,12 @@ function validarFoto($email){
         }
     
         if ($_FILES["fotoPerfil"]["size"] > 10000000) { // max: 10 Megabytes
-            $uploadOk = 0;
+            $valido = 0;
         }
     
         $tipoFoto = $_FILES["fotoPerfil"]["type"];
         if($tipoFoto != "image/png" && $tipoFoto != "image/jpg" && $tipoFoto != "image/jpeg") {
-            $uploadOk = 0;
+            $valido = 0;
         }
     
         if ($valido) {
@@ -77,7 +77,7 @@ function validarFoto($email){
                 return $rutaFinal;
             }
         }else {
-            return $valida;
+            return $valido;
         }
     }else{
         return $rutaFotoPorDefecto;
@@ -120,7 +120,7 @@ function validarRegistro(){
     // Validación de requisitos
 
     // Nombre
-    if (!preg_match("/^[a-zA-Z]+$/", $nombre)) {
+    if (!preg_match("/^[a-zA-ZñÑáéíóúÁÉÍÓÚ' ]+$/", $nombre)) {
         $nombre = "";
         $valido = false;
         array_push($errores, "NOMBRE: Solo debe contener letras y no puede esta vacío");
@@ -130,7 +130,7 @@ function validarRegistro(){
     }
 
     // Apellidos
-    if (!preg_match("/^[a-zA-Z-' ]+$/", $apellidos)) {
+    if (!preg_match("/^[a-zA-ZñÑáéíóúÁÉÍÓÚ' ]+$/", $apellidos)) {
         $apellidos = "";
         $valido = false;
         array_push($errores, "APELLIDOS: Solo debe contener letras y no pueden estar vacíos");
@@ -143,7 +143,7 @@ function validarRegistro(){
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $email = "";
         $valido = false;
-        array_push($errores, "EMAIL: Debe tener un formato válido: nombre@dominio.extensión y no estar vacío");
+        array_push($errores, "EMAIL: Debe tener un formato válido: nombre@dominio.extensión, no estar vacío, sin acentos ni caracteres");
         unset($_SESSION["email"]);
     }else {
         $_SESSION["email"] = $email;
@@ -287,7 +287,8 @@ function eliminarCuenta(){
     unset($_SESSION["apellidos"]);
     unset($_SESSION["email"]);
     unset($_SESSION["fecha"]);
-    header("location: registro.php");
+    echo "<script>alert('Cuenta borrada correctamente')</script>";
+    header("location: index.php");
     die();
 }
 
