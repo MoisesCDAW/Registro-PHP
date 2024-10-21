@@ -11,22 +11,14 @@
 
     <?php
         if (isset($_COOKIE["email"])) {
-            if (isset($_SESSION["cerradaSesion"])) {
-                $valor = $_SESSION["cerradaSesion"];
-                if (!$valor) {
-                    unset($_SESSION["cerradaSesion"]);
-                    $_SESSION["email"] = $_COOKIE["email"];
-                    header("location: operaciones.php");
-                    die();
-                }
-            }else {
-                unset($_SESSION["cerradaSesion"]);
-                $_SESSION["email"] = $_COOKIE["email"];
-                header("location: operaciones.php");
-                die();
-            }
+            $_SESSION["email"] = $_COOKIE["email"];
+            header("location: operaciones.php");
+            die();
         }else{
-            unset($_SESSION);
+            unset($_SESSION["nombre"]);
+            unset($_SESSION["apellidos"]);
+            unset($_SESSION["email"]);
+            unset($_SESSION["fecha"]);
         }
     ?>
 

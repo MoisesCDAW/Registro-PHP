@@ -296,8 +296,11 @@ function eliminarCuenta(){
  * Cierra la sesión del usuario y elimina los datos que se autocompletan el formulario de registro
  */
 function cerrarSesion(){
-    unset($_SESSION);
-    $_SESSION["cerradaSesion"] = true;
+    setcookie("email", "");
+    unset($_SESSION["nombre"]);
+    unset($_SESSION["apellidos"]);
+    unset($_SESSION["email"]);
+    unset($_SESSION["fecha"]);
     header("location: index.php");
     die();
 }
