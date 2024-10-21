@@ -266,18 +266,7 @@ function validarInicioSesion(){
 
         // Recordar usuario
         if (isset($_POST["recordar"])) {
-            if ($_POST["recordar"]=="on") {
-                $_COOKIE["email"] = $email;
-                // var_dump($_COOKIE["email"]);
-                // die();
-            }
-
-        }else{
-            if (isset($_COOKIE["email"])) {
-                var_dump("InicioSesion: No existe la cookie");
-                die();
-                unset($_COOKIE["email"]);
-            }
+            setcookie("email", $email);
         }
 
         header("location: operaciones.php");

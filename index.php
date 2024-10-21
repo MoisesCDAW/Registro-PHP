@@ -10,16 +10,15 @@
 <body>
 
     <?php
-        // var_dump("Index: ".$_COOKIE["email"]);
-        // die();
-
         if (isset($_COOKIE["email"])) {
             $_SESSION["email"] = $_COOKIE["email"];
-            // header("location: operaciones.php");
+            // var_dump($_COOKIE);
             // die();
-            // var_dump($_SESSION["email"]);
-            // die();
+            header("location: operaciones.php");
+            die();
         }else{
+            // var_dump($_COOKIE);
+            // die();
             unset($_SESSION["email"]);
             unset($_SESSION["nombre"]);
             unset($_SESSION["apellidos"]);
