@@ -266,7 +266,7 @@ function validarInicioSesion(){
 
         // Recordar usuario
         if (isset($_POST["recordar"])) {
-            setcookie("email", $email, time()+3600);
+            setcookie("email", $email, time()+(60*60*24*30));
         }
 
         header("location: operaciones.php");
@@ -296,12 +296,8 @@ function eliminarCuenta(){
  * Cierra la sesión del usuario y elimina los datos que se autocompletan el formulario de registro
  */
 function cerrarSesion(){
-
-    unset($_SESSION["email"]);
-    unset($_SESSION["nombre"]);
-    unset($_SESSION["apellidos"]);
-    unset($_SESSION["email"]);
-    unset($_SESSION["fecha"]);
+    unset($_SESSION);
+    $_SESSION["cerradaSesion"] = true;
     header("location: index.php");
     die();
 }

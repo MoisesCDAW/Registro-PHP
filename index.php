@@ -11,19 +11,22 @@
 
     <?php
         if (isset($_COOKIE["email"])) {
-            $_SESSION["email"] = $_COOKIE["email"];
-            // var_dump($_COOKIE);
-            // die();
-            header("location: operaciones.php");
-            die();
+            if (isset($_SESSION["cerradaSesion"])) {
+                $valor = $_SESSION["cerradaSesion"];
+                if (!$valor) {
+                    unset($_SESSION["cerradaSesion"]);
+                    $_SESSION["email"] = $_COOKIE["email"];
+                    header("location: operaciones.php");
+                    die();
+                }
+            }else {
+                unset($_SESSION["cerradaSesion"]);
+                $_SESSION["email"] = $_COOKIE["email"];
+                header("location: operaciones.php");
+                die();
+            }
         }else{
-            // var_dump($_COOKIE);
-            // die();
-            unset($_SESSION["email"]);
-            unset($_SESSION["nombre"]);
-            unset($_SESSION["apellidos"]);
-            unset($_SESSION["email"]);
-            unset($_SESSION["fecha"]);
+            unset($_SESSION);
         }
     ?>
 
