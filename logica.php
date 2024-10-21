@@ -192,7 +192,7 @@ function validarRegistro(){
         $valido = false;
         array_push($errores, "FOTO: Inválida");
     }else {
-        $_SESSION["rutaFoto"] = $rutaFoto;
+        $_SESSION["rutaFoto"] = $rutaFoto; // Para poder borrar la foto desde logica.php
     }
 
 
@@ -207,7 +207,6 @@ function validarRegistro(){
             $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
             "password"=>$password, "rutaFoto"=>$rutaFoto];    
     
-            $json = json_encode($datos);
             file_put_contents("../../usuarios/".$email .".json", json_encode($datos));
     
             $_SESSION["email"] = $email;
@@ -287,14 +286,15 @@ function eliminarCuenta(){
     unset($_SESSION["apellidos"]);
     unset($_SESSION["email"]);
     unset($_SESSION["fecha"]);
-    echo "<script>alert('Cuenta borrada correctamente')</script>";
+    $_SESSION["cuentaBorrada"] = true;
+
     header("location: index.php");
     die();
 }
 
 
 /**
- * Cierra la sesión del usuario y elimina los datos que se autocompletan el formulario de registro
+ * Cierra la sesión del usuario y elimina los datos que se autocompletan en el formulario de registro
  */
 function cerrarSesion(){
     setcookie("email", "");

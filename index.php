@@ -10,7 +10,12 @@
 <body>
 
     <?php
-        if (isset($_COOKIE["email"])) {
+        if (isset($_SESSION["cuentaBorrada"])) {
+            echo "<script>alert('Cuenta borrada correctamente')</script>";
+            unset($_SESSION["cuentaBorrada"]);
+        }
+
+        if (isset($_COOKIE["email"])) { // Si existe la cookie es porque el usuario decidió recordar la sesión
             $_SESSION["email"] = $_COOKIE["email"];
             header("location: operaciones.php");
             die();
