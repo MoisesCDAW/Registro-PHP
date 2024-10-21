@@ -200,7 +200,7 @@ function validarRegistro(){
     if (file_get_contents("../../usuarios/".$email.".json")!==false) {
         array_push($errores, "ERROR: Ese usuario ya existe");
         $_SESSION["errores"] = $errores;
-        header("location: index.php");
+        header("location: registro.php");
         die();
     }else{
         if ($valido) {
@@ -211,11 +211,11 @@ function validarRegistro(){
             file_put_contents("../../usuarios/".$email .".json", json_encode($datos));
     
             $_SESSION["email"] = $email;
-            header("location: iniciosesion.php");
+            header("location: index.php");
             die();
         }else {
             $_SESSION["errores"] = $errores;
-            header("location: index.php");
+            header("location: registro.php");
             die();
         }
     }
@@ -260,13 +260,13 @@ function validarInicioSesion(){
     // Redirección a operaciones.php o muestra de errores
     if (count($errores)>0) {
         $_SESSION["errores"] = $errores;
-        header("location: iniciosesion.php");
+        header("location: index.php");
         die();
     }else {
 
         // Recordar usuario
         if (isset($_POST["recordar"])) {
-            setcookie("email", $email);
+            setcookie("email", $email, time()+3600);
         }
 
         header("location: operaciones.php");
@@ -287,7 +287,7 @@ function eliminarCuenta(){
     unset($_SESSION["apellidos"]);
     unset($_SESSION["email"]);
     unset($_SESSION["fecha"]);
-    header("location: index.php");
+    header("location: registro.php");
     die();
 }
 
@@ -296,12 +296,13 @@ function eliminarCuenta(){
  * Cierra la sesión del usuario y elimina los datos que se autocompletan el formulario de registro
  */
 function cerrarSesion(){
+
     unset($_SESSION["email"]);
     unset($_SESSION["nombre"]);
     unset($_SESSION["apellidos"]);
     unset($_SESSION["email"]);
     unset($_SESSION["fecha"]);
-    header("location: iniciosesion.php");
+    header("location: index.php");
     die();
 }
 
