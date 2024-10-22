@@ -37,7 +37,7 @@
     <br>
 
     <form action="logica.php" method="post">
-        <button value="eliminarCuenta" name="enviar">Eliminar Cuenta</button>
+        <button value="eliminarCuenta" name="enviar" onclick="return confirm('¿Estás seguro de borrar la cuenta?')">Eliminar Cuenta</button>
         <button value="cerrarSesion" name="enviar">Cerrar Sesión</button>
     </form>
 </body>

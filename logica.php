@@ -113,7 +113,7 @@ function validarRegistro(){
     // Validación de requisitos
 
     // Nombre
-    if (!preg_match("/^[a-zA-ZñáéíóúÑÁÉÍÓÚ][a-zA-Zñáéíóú]{2,15}$/", $nombre)) {
+    if (!preg_match("/^[a-zA-ZñáéíóúÑÁÉÍÓÚ][a-zA-Zñáéíóú]{2,20}$/", $nombre)) {
         $nombre = "";
         $valido = false;
         array_push($errores, "NOMBRE: Solo letras, Max: 15 caracteres, sin espacios, no puede estar vacío.");
@@ -200,7 +200,6 @@ function validarRegistro(){
              // Imagen
             $rutaFoto = validarFoto($email);
             if ($rutaFoto===0) {
-                $valido = false;
                 array_push($errores, "FOTO: Inválida, solo png, jpg o jpeg y < 10 MB");
             }else {
                 $_SESSION["rutaFoto"] = $rutaFoto; // Para poder borrar la foto desde logica.php
@@ -292,7 +291,7 @@ function eliminarCuenta(){
     unset($_SESSION["apellidos"]);
     unset($_SESSION["email"]);
     unset($_SESSION["fecha"]);
-
+    $_SESSION["cuentaBorrada"] = true;
     header("location: index.php");
     die();
 }
