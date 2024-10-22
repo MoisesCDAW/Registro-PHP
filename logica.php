@@ -41,10 +41,7 @@ function validarDato($dato){
 
 
 /**
- * Valida la foto subida por el usuario
- * 1. Comprueba que no esté vacío
- * 2. Comprueba que la foto cumpla los requisitos
- * 3. Guarda un por defecto si lo anterior no se cumple
+ * Valida la foto subida por el usuario. Guarda un por defecto si lo anterior no se cumple
  */
 function validarFoto($email){
     $rutaFinal = "img/" . $email . "." . strtolower(pathinfo($_FILES["fotoPerfil"]["name"],PATHINFO_EXTENSION));
@@ -90,16 +87,11 @@ function validarFoto($email){
 /**
  * Valida los datos de registro que ingresa el usuario:
  * 1. Sanea los datos ingresados
- * 2. Comprueba que el nombre solo sean letras
- * 3. Comprueba que los apellidos solo sean letras
- * 4. Usa FILTER_VALIDATE_EMAIL para validar el email
- * 5. Comprueba que la fecha cumpla los requisitos
- * 6. Comprueba que la contraseña cumpla los requisitos
- * 7. Comprueba que la foto cumpla los requisitos. Agrega una por defecto si no agrega foto o es inválida
+ * 2. Comprueba que el nombre, apellidos, email, fechaNac y contraseña
+ * 3. Tiene como complemento a las funciones validarDato() y validarFoto()
  */
 function validarRegistro(){
     $nombre = $apellidos = $email = $fechaNac = $password = $passwordReplic = "";
-    $json = "";
     $datos = [];
     $valido = true;
     $errores = [];
@@ -204,11 +196,12 @@ function validarRegistro(){
         die();
     }else{
         if ($valido) {
+
              // Imagen
             $rutaFoto = validarFoto($email);
             if ($rutaFoto===0) {
                 $valido = false;
-                array_push($errores, "FOTO: Inválida");
+                array_push($errores, "FOTO: Inválida, solo png, jpg o jpeg y < 10 MB");
             }else {
                 $_SESSION["rutaFoto"] = $rutaFoto; // Para poder borrar la foto desde logica.php
             }
@@ -233,15 +226,14 @@ function validarRegistro(){
 
 /**
  * Valida que el inicio de sesión:
- * 1. Sanea los datos ingresados
- * 2. Que el email sea correcta comprobando que exista un archivo.json con ese email
- * 3. Que la contraseña sea igual a la del archivo .json de su respectivo usuario
+ * 1. Que el email sea correcta comprobando que exista un archivo.json con ese email
+ * 2. Que la contraseña sea igual a la del archivo .json de su respectivo usuario
+ * 3. Tiene como complemento a la función validarDato()
  */
 function validarInicioSesion(){
     $email = $password = "";
     $json = "";
     $datos = [];
-    $valido = true;
     $errores = [];
 
     // Seguridad de datos
@@ -295,7 +287,6 @@ function eliminarCuenta(){
     unset($_SESSION["apellidos"]);
     unset($_SESSION["email"]);
     unset($_SESSION["fecha"]);
-    $_SESSION["cuentaBorrada"] = true;
 
     header("location: index.php");
     die();
