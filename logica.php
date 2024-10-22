@@ -53,6 +53,7 @@ function validarFoto($email){
     $rutaFotoPorDefecto = "img/porDefecto.png";
 
     if ($_FILES["fotoPerfil"]["name"]!="") {
+
         if (getimagesize($_FILES["fotoPerfil"]["tmp_name"])==false) { // Si no se puede saber el tamaño de la imagen, no es imagen
             $valido = 0;
         }
@@ -120,22 +121,30 @@ function validarRegistro(){
     // Validación de requisitos
 
     // Nombre
-    if (!preg_match("/^[a-zA-ZñÑáéíóúÁÉÍÓÚ' ]{1,15}$/", $nombre)) {
+    if (!preg_match("/^[A-ZÑÁÉÍÓÚ][a-zA-Zñáéíóú]{2,15}$/", $nombre)) {
         $nombre = "";
         $valido = false;
-        array_push($errores, "NOMBRE: Solo debe contener letras, Max: 15 caracteres y no puede esta vacío");
+        array_push($errores, "NOMBRE: Solo debe contener letras, Max: 15 caracteres, sin espacios y no puede esta vacío");
         unset($_SESSION["nombre"]);
     }else {
+        $nombre = ucfirst(strtolower($nombre));
         $_SESSION["nombre"] = $nombre;
     }
 
     // Apellidos
-    if (!preg_match("/^[a-zA-ZñÑáéíóúÁÉÍÓÚ' ]{1,30}$/", $apellidos)) {
+    if (!preg_match("/^[A-Z][a-zA-Zñáéíóú]{1,14}( [A-Z][a-zA-Zñáéíóú]{1,14})?$/", $apellidos)) {
         $apellidos = "";
         $valido = false;
         array_push($errores, "APELLIDOS: Solo debe contener letras, Max: 30 caracteres y no pueden estar vacíos");
         unset($_SESSION["apellidos"]);
     }else {
+        $aux = explode(" ", $apellidos);
+        $aux2 = [];
+        $apellidos = "";
+        foreach($aux as $value){
+            array_push($aux2, ucfirst(strtolower($value)));
+        }
+        $apellidos = implode(" ", $aux2);
         $_SESSION["apellidos"] = $apellidos;
     }
 
@@ -186,24 +195,24 @@ function validarRegistro(){
         array_push($errores, "CONTRASEÑA: Tienen que ser iguales");
     }
 
-    // Imagen
-    $rutaFoto = validarFoto($email);
-    if ($rutaFoto===0) {
-        $valido = false;
-        array_push($errores, "FOTO: Inválida");
-    }else {
-        $_SESSION["rutaFoto"] = $rutaFoto; // Para poder borrar la foto desde logica.php
-    }
-
 
     // Guardado de datos o muestra de errores
     if (file_get_contents("../../usuarios/".$email.".json")!==false) {
-        array_push($errores, "ERROR: Ese usuario ya existe");
+        array_push($errores, "ERROR: Ese email ya está en uso");
         $_SESSION["errores"] = $errores;
         header("location: registro.php");
         die();
     }else{
         if ($valido) {
+             // Imagen
+            $rutaFoto = validarFoto($email);
+            if ($rutaFoto===0) {
+                $valido = false;
+                array_push($errores, "FOTO: Inválida");
+            }else {
+                $_SESSION["rutaFoto"] = $rutaFoto; // Para poder borrar la foto desde logica.php
+            }
+
             $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
             "password"=>$password, "rutaFoto"=>$rutaFoto];    
     

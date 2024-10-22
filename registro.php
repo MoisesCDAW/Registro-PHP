@@ -9,16 +9,9 @@
 </head>
 <body>
 
-    <?php
-        unset($_SESSION["nombre"]);
-        unset($_SESSION["apellidos"]);
-        unset($_SESSION["email"]);
-        unset($_SESSION["fecha"]);
-    ?>
-
     <form action="logica.php" method="post" enctype="multipart/form-data">
-        <input type="text" name="nombre" value="<?php if (isset($_SESSION["nombre"])) {echo $_SESSION["nombre"];}?>" placeholder="Nombre">
-        <input type="text" name="apellidos" value="<?php if (isset($_SESSION["apellidos"])) {echo $_SESSION["apellidos"];}?>" placeholder="Apellidos">
+        <input type="text" name="nombre" style="text-transform: capitalize;" value="<?php if (isset($_SESSION["nombre"])) {echo $_SESSION["nombre"];}?>" placeholder="Nombre">
+        <input type="text" name="apellidos" style="text-transform: capitalize;" value="<?php if (isset($_SESSION["apellidos"])) {echo $_SESSION["apellidos"];}?>" placeholder="Apellidos">
         <input type="text" name="email" value="<?php if (isset($_SESSION["email"])) {echo $_SESSION["email"];}?>" placeholder="email">
         Mes/Día/Año: <input type="date" name="fechaNac" value="<?php if (isset($_SESSION["fecha"])) {echo $_SESSION["fecha"];}?>">
         <input type="password" name="password" placeholder="Contraseña">
