@@ -113,10 +113,10 @@ function validarRegistro(){
     // Validación de requisitos
 
     // Nombre
-    if (!preg_match("/^[A-ZÑÁÉÍÓÚ][a-zA-Zñáéíóú]{2,15}$/", $nombre)) {
+    if (!preg_match("/^[a-zA-ZñáéíóúÑÁÉÍÓÚ][a-zA-Zñáéíóú]{2,15}$/", $nombre)) {
         $nombre = "";
         $valido = false;
-        array_push($errores, "NOMBRE: Solo debe contener letras, Max: 15 caracteres, sin espacios y no puede esta vacío");
+        array_push($errores, "NOMBRE: Solo letras, Max: 15 caracteres, sin espacios, no puede estar vacío.");
         unset($_SESSION["nombre"]);
     }else {
         $nombre = ucfirst(strtolower($nombre));
@@ -124,10 +124,10 @@ function validarRegistro(){
     }
 
     // Apellidos
-    if (!preg_match("/^[A-Z][a-zA-Zñáéíóú]{1,14}( [A-Z][a-zA-Zñáéíóú]{1,14})?$/", $apellidos)) {
+    if (!preg_match("/^[a-zA-Z][a-zA-Zñáéíóú]{2,14}( [a-zA-Z][a-zA-Zñáéíóú]{3,14})?$/", $apellidos)) {
         $apellidos = "";
         $valido = false;
-        array_push($errores, "APELLIDOS: Solo debe contener letras, Max: 30 caracteres y no pueden estar vacíos");
+        array_push($errores, "APELLIDOS: Solo letras, Max: 30 caracteres y no pueden estar vacíos. Primera letra sin acento");
         unset($_SESSION["apellidos"]);
     }else {
         $aux = explode(" ", $apellidos);
@@ -209,7 +209,12 @@ function validarRegistro(){
             $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
             "password"=>$password, "rutaFoto"=>$rutaFoto];    
     
+            if (file_exists("../../usuarios/")==false) {
+                mkdir("../../usuarios/", 0777, true);
+            }
+
             file_put_contents("../../usuarios/".$email .".json", json_encode($datos));
+            
     
             $_SESSION["email"] = $email;
             header("location: index.php");
