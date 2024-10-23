@@ -308,6 +308,7 @@ function eliminarCuenta(){
     unset($_SESSION["email"]);
     unset($_SESSION["fecha"]);
     $_SESSION["cuentaBorrada"] = true;
+    setcookie("email", "");
     header("location: index.php");
     die();
 }
