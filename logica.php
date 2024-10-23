@@ -41,6 +41,19 @@ function validarDato($dato){
 
 
 /**
+ * Capitaliza el string que se le pasa como parámetro
+ */
+function toCapitalize($string){
+    $letras = ['Á'=>'á', 'É'=>'é', 'Í'=>'í', 'Ó'=>'ó', 'Ú'=>'ú'];
+    $string = mb_strtolower(strtr($string, $letras));
+    $primera = mb_substr($string, 0, 1);
+    $primera = mb_strtoupper($primera);
+
+    return $primera.mb_substr($string, 1);
+}
+
+
+/**
  * Valida la foto subida por el usuario. Guarda un por defecto si lo anterior no se cumple
  */
 function validarFoto($email){
@@ -113,30 +126,33 @@ function validarRegistro(){
     // Validación de requisitos
 
     // Nombre
-    if (!preg_match("/^[a-zA-ZñáéíóúÑÁÉÍÓÚ][a-zA-Zñáéíóú]{2,20}$/", $nombre)) {
+    if (!preg_match("/^[a-zA-ZñáéíóúÑÁÉÍÓÚ]{2,14}( [a-zA-Z][a-zA-ZñáéíóúÑÁÉÍÓÚ]{2,14})?$/", $nombre)) {
         $nombre = "";
         $valido = false;
-        array_push($errores, "NOMBRE: Solo letras, Max: 15 caracteres, sin espacios, no puede estar vacío.");
+        array_push($errores, "NOMBRE: Solo letras, Max: 30 caracteres y no puede estar vacío.");
         unset($_SESSION["nombre"]);
     }else {
-        $nombre = ucfirst(strtolower($nombre));
+        $aux = explode(" ", $nombre);
+        for ($i=0; $i < count($aux); $i++) { 
+            $aux[$i] = toCapitalize($aux[$i]);
+        }
+        $nombre = implode(" ", $aux);
         $_SESSION["nombre"] = $nombre;
     }
 
     // Apellidos
-    if (!preg_match("/^[a-zA-Z][a-zA-Zñáéíóú]{2,14}( [a-zA-Z][a-zA-Zñáéíóú]{3,14})?$/", $apellidos)) {
+    if (!preg_match("/^[a-zA-ZñáéíóúÑÁÉÍÓÚ]{2,14}( [a-zA-Z][a-zA-ZñáéíóúÑÁÉÍÓÚ]{3,14})?$/", $apellidos)) {
         $apellidos = "";
         $valido = false;
         array_push($errores, "APELLIDOS: Solo letras, Max: 30 caracteres y no pueden estar vacíos. Primera letra sin acento");
         unset($_SESSION["apellidos"]);
     }else {
         $aux = explode(" ", $apellidos);
-        $aux2 = [];
-        $apellidos = "";
-        foreach($aux as $value){
-            array_push($aux2, ucfirst(strtolower($value)));
+        for ($i=0; $i < count($aux); $i++) { 
+            $aux[$i] = toCapitalize($aux[$i]);
         }
-        $apellidos = implode(" ", $aux2);
+        $apellidos = implode(" ", $aux);
+
         $_SESSION["apellidos"] = $apellidos;
     }
 

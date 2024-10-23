@@ -34,9 +34,10 @@
         <input type="checkbox" name="recordar"> Recordar en este dispositivo
     </form>
 
+    <br>
     <form action="registro.php" method="post">
         <p>¿No tienes cuenta?</p>
-        <button name="enviar" value="registro">Clic aquí</button>
+        <button name="enviar" value="registro">Click aquí</button>
     </form>
 
     <?php 
