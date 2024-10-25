@@ -211,15 +211,16 @@ function validarRegistro(){
         header("location: registro.php");
         die();
     }else{
-        if ($valido) {
+        // Imagen
+        $rutaFoto = validarFoto($email);
+        if ($rutaFoto===0) {
+            $valido = false;
+            array_push($errores, "FOTO: Inválida, solo png, jpg o jpeg y < 10 MB");
+        }else {
+            $_SESSION["rutaFoto"] = $rutaFoto; // Para poder borrar la foto desde logica.php
+        }
 
-             // Imagen
-            $rutaFoto = validarFoto($email);
-            if ($rutaFoto===0) {
-                array_push($errores, "FOTO: Inválida, solo png, jpg o jpeg y < 10 MB");
-            }else {
-                $_SESSION["rutaFoto"] = $rutaFoto; // Para poder borrar la foto desde logica.php
-            }
+        if ($valido) {
 
             $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
             "password"=>$password, "rutaFoto"=>$rutaFoto];    
