@@ -221,7 +221,6 @@ function validarRegistro(){
         }
 
         if ($valido) {
-
             $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
             "password"=>$password, "rutaFoto"=>$rutaFoto];    
     
@@ -236,6 +235,7 @@ function validarRegistro(){
             header("location: index.php");
             die();
         }else {
+            unlink($_SESSION["rutaFoto"]);
             $_SESSION["errores"] = $errores;
             header("location: registro.php");
             die();
