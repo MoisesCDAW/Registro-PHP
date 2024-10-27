@@ -1,6 +1,6 @@
 Prácticas incluidas
 1. Muestra de mensaje alert() de js
-2. Muestra una imagen con echo "<img src=''>"
+2. Muestra una imagen con echo "<img src=>"
 3. Sanear datos de los inputs del usuario
 4. Capitalizar texto con y sin acentos
 5. Validar imágenes guardadas en $_FILES
