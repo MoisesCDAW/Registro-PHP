@@ -2,31 +2,35 @@
 session_start();
 
 
-/**
- * Comprueba que botón ha pulsado el usuario
- */
-function inicio (){
-    if (isset($_POST["enviar"])) {
-        $operacion = $_POST["enviar"];
+function conectar(){
+    $servername = "localhost";
+    $username = "moises";
+    $password = "123456";
+    $dbname = "campus";
+
+    try {
+        $aux = new PDO("mysql:host=$servername;$dbname=myDB", $username, $password);
+        $aux->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch(PDOException $e) {
+        var_dump("Connection failed: " . $e->getMessage());
+        die();
     }
 
-    switch ($operacion) {
-        case 'registro':
-            validarRegistro();
-            break;
-        case 'iniSesion':
-            validarInicioSesion();
-            break;
-        case 'eliminarCuenta':
-            eliminarCuenta();
-            break;
-        case 'cerrarSesion':
-            cerrarSesion();
-            break;
-    }
+    return $aux;
 }
 
-inicio ();
+// Variable de conexión a la base de datos
+$conn = conectar();
+
+
+function create(){
+
+}
+
+
+function read(){
+
+}
 
 
 /**
@@ -205,11 +209,10 @@ function validarRegistro(){
 
 
     // Guardado de datos o muestra de errores
-    if (file_get_contents("../../usuarios/".$email.".json")!==false) {
-        array_push($errores, "ERROR: Ese email ya está en uso");
-        $_SESSION["errores"] = $errores;
-        header("location: registro.php");
-        die();
+    if (true) {
+        
+        // COMPROBAR QUE EL EMAIL NO EXISTA
+
     }else{
         // Imagen
         $rutaFoto = validarFoto($email);
@@ -224,11 +227,7 @@ function validarRegistro(){
             $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
             "password"=>$password, "rutaFoto"=>$rutaFoto];    
     
-            if (file_exists("../../usuarios/")==false) {
-                mkdir("../../usuarios/", 0777, true);
-            }
-
-            file_put_contents("../../usuarios/".$email .".json", json_encode($datos));
+            // INSERT INTO
             
     
             $_SESSION["email"] = $email;
@@ -263,12 +262,10 @@ function validarInicioSesion(){
         $password = validarDato($_POST["password"]);
     }
 
-    // Comprobación que los datos existen
-    if (file_get_contents("../../usuarios/".$email.".json")===false) {
-        array_push($errores, "No existe usuario con ese email");
-    }else {
-        $json = file_get_contents("../../usuarios/".$email.".json");
-        $datos = (array) json_decode($json);
+    // Recuperación de los datos del usuario
+
+        // SELECT
+
         $passwordValido = password_verify($password, $datos["password"]);
 
         if ($datos["email"]==$email && $passwordValido) {
@@ -276,7 +273,6 @@ function validarInicioSesion(){
         }else {
             array_push($errores, "Contraseña incorrecta");
         }
-    }
 
     // Redirección a operaciones.php o muestra de errores
     if (count($errores)>0) {
@@ -303,7 +299,6 @@ function eliminarCuenta(){
     if ($_SESSION["rutaFoto"]!="img/porDefecto.png") {
         unlink($_SESSION["rutaFoto"]);
     }
-    unlink("../../usuarios/".$_SESSION["email"].".json");
     unset($_SESSION["nombre"]);
     unset($_SESSION["apellidos"]);
     unset($_SESSION["email"]);
@@ -328,3 +323,29 @@ function cerrarSesion(){
     die();
 }
 
+
+/**
+ * Comprueba que botón ha pulsado el usuario
+ */
+function inicio (){
+    if (isset($_POST["enviar"])) {
+        $operacion = $_POST["enviar"];
+    }
+
+    switch ($operacion) {
+        case 'registro':
+            validarRegistro();
+            break;
+        case 'iniSesion':
+            validarInicioSesion();
+            break;
+        case 'eliminarCuenta':
+            eliminarCuenta();
+            break;
+        case 'cerrarSesion':
+            cerrarSesion();
+            break;
+    }
+}
+
+inicio ();
