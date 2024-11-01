@@ -1,4 +1,4 @@
-<?php session_start();?>
+<?php include 'logica.php';?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -10,28 +10,20 @@
 <body>
 
     <?php 
-        if (isset($_SESSION["email"])) {
-            $email = $_SESSION["email"];
-            $rutaFoto = "";
+        $rutaFoto = "";
 
-            if (file_exists("../../usuarios/".$email.".json")) {
-                $datos = file_get_contents("../../usuarios/".$email.".json");
-                $datos = json_decode($datos);
-                if ($datos != null && $datos!=false) {
-                    foreach ($datos as $key => $value) {
-                        if ($key!="password" && $key!="rutaFoto") {
-                            echo $key." : ".$value."<br>";
-                        }
-                        if ($key=="rutaFoto") {
-                            $rutaFoto = $value;
-                        }
-                    }
-        
-                    echo "<img src='$rutaFoto' width='200px' height='200px''>";
-                }
+        $datos = read($_SESSION["email"]);
+
+        foreach ($datos as $key => $value) {
+            if ($key!="contrasena" && $key!="rutaFoto" && $key !="id") {
+                echo $key." : ".$value."<br>";
             }
-            
+            if ($key=="rutaFoto") {
+                $rutaFoto = $value;
+            }
         }
+
+        echo "<img src='$rutaFoto' width='200px' height='200px''>";  
     ?>
 
     <br>

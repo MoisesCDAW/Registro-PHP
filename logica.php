@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+// Variable de identificación de cada usuario
+$email = "";
+
 
 function conectar(){
     $servername = "localhost";
@@ -23,13 +26,50 @@ function conectar(){
 $conn = conectar();
 
 
-function create(){
+function create($nombre, $apellidos, $fechaNac, $email, $password, $rutaFoto){
+    global $conn;
 
+    try {
+        $stmt = $conn->prepare("INSERT INTO campus.usuarios (nombre, apellidos, fechaNac, email, contrasena, rutaFoto)
+            VALUES (:nombre, :apellidos, :fechaNac, :email, :contrasena, :rutaFoto)");
+        
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':apellidos', $apellidos);
+        $stmt->bindParam(':fechaNac', $fechaNac);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':contrasena', $password);
+        $stmt->bindParam(':rutaFoto', $rutaFoto);
+        $stmt->execute();
+        
+        return true;
+
+    } catch(PDOException $e) {
+        var_dump("Create Failed: " . $e->getMessage());
+        die();
+    }
+    
+    $conn = null;
 }
 
 
-function read(){
+function read($email){
+    global $conn;
 
+    try {
+        $stmt = $conn->prepare("SELECT * FROM campus.usuarios where email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+
+        $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $datos;
+
+    } catch(PDOException $e) {
+        var_dump("Read Failed: " . $e->getMessage());
+        die();
+    }
+    
+    $conn = null;
 }
 
 
@@ -60,11 +100,12 @@ function toCapitalize($string){
 /**
  * Valida la foto subida por el usuario. Guarda un por defecto si lo anterior no se cumple
  */
-function validarFoto($email){
+function validarFoto(){
+    global $email;
     $rutaFinal = "img/" . $email . "." . strtolower(pathinfo($_FILES["fotoPerfil"]["name"],PATHINFO_EXTENSION));
     $tipoFoto = "";
     $valido = 1;
-    $rutaFotoPorDefecto = "img/porDefecto.png";
+    $rutaDefecto = "img/porDefecto.png";
 
     if ($_FILES["fotoPerfil"]["name"]!="") {
 
@@ -95,7 +136,11 @@ function validarFoto($email){
             return $valido;
         }
     }else{
-        return $rutaFotoPorDefecto;
+        if (!copy($rutaDefecto, "img/".$email.".png")) {
+            return $valido = 0;
+        } else {
+            return "img/".$email.".png";
+        }
     }
     
 }
@@ -108,8 +153,8 @@ function validarFoto($email){
  * 3. Tiene como complemento a las funciones validarDato() y validarFoto()
  */
 function validarRegistro(){
-    $nombre = $apellidos = $email = $fechaNac = $password = $passwordReplic = "";
-    $datos = [];
+    global $email;
+    $nombre = $apellidos = $fechaNac = $password = $passwordReplic = "";
     $valido = true;
     $errores = [];
     $yearMinimo = 1920;
@@ -160,13 +205,27 @@ function validarRegistro(){
         $_SESSION["apellidos"] = $apellidos;
     }
 
+
     // Email
+
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $email = "";
         $valido = false;
         array_push($errores, "EMAIL: Debe tener un formato válido: nombre@dominio.extensión, no estar vacío, sin acentos ni caracteres");
         unset($_SESSION["email"]);
-    }else {
+    }
+    
+    $datos = read($email);
+
+    if ($datos!=false) {
+        if ($datos["email"] == $email){
+            $valido = false;
+            array_push($errores, "EMAIL: Ya existe");
+        }
+    }
+
+
+    if($valido){
         $_SESSION["email"] = $email;
     }
 
@@ -207,40 +266,30 @@ function validarRegistro(){
         array_push($errores, "CONTRASEÑA: Tienen que ser iguales");
     }
 
-
-    // Guardado de datos o muestra de errores
-    if (true) {
-        
-        // COMPROBAR QUE EL EMAIL NO EXISTA
-
-    }else{
-        // Imagen
-        $rutaFoto = validarFoto($email);
-        if ($rutaFoto===0) {
+    // Imagen
+    if ($valido) {
+        $rutaFoto = validarFoto();
+        if ($rutaFoto==0) {
             $valido = false;
             array_push($errores, "FOTO: Inválida, solo png, jpg o jpeg y < 10 MB");
         }else {
             $_SESSION["rutaFoto"] = $rutaFoto; // Para poder borrar la foto desde logica.php
         }
-
-        if ($valido) {
-            $datos = ["nombre"=>$nombre, "apellidos"=>$apellidos, "email"=>$email, "fechaNac"=>$fechaNac, 
-            "password"=>$password, "rutaFoto"=>$rutaFoto];    
-    
-            // INSERT INTO
-            
-    
-            $_SESSION["email"] = $email;
-            header("location: index.php");
-            die();
-        }else {
-            unlink($_SESSION["rutaFoto"]);
-            $_SESSION["errores"] = $errores;
-            header("location: registro.php");
-            die();
-        }
     }
 
+
+    if ($valido) {
+
+        create($nombre, $apellidos, $fechaNac, $email, $password, $rutaFoto);
+
+        $_SESSION["email"] = $email;
+        header("location: index.php");
+        die();
+    }else {
+        $_SESSION["errores"] = $errores;
+        header("location: registro.php");
+        die();
+    }
 }
 
 
@@ -251,8 +300,7 @@ function validarRegistro(){
  * 3. Tiene como complemento a la función validarDato()
  */
 function validarInicioSesion(){
-    $email = $password = "";
-    $json = "";
+    global $email;
     $datos = [];
     $errores = [];
 
@@ -264,15 +312,25 @@ function validarInicioSesion(){
 
     // Recuperación de los datos del usuario
 
-        // SELECT
+        $datos = read($email);
 
-        $passwordValido = password_verify($password, $datos["password"]);
+        $passwordValido = password_verify($password, $datos["contrasena"]);
 
-        if ($datos["email"]==$email && $passwordValido) {
-            $_SESSION["email"] = $email;
+        if ($email!="") {
+            if ($datos["email"]==$email) {
+                if ($passwordValido) {
+                    $_SESSION["email"] = $email;
+                }else {
+                    array_push($errores, "Contraseña incorrecta");
+                }
+                
+            }else {
+                array_push($errores, "No existe ese usuario");
+            }
         }else {
-            array_push($errores, "Contraseña incorrecta");
+            array_push($errores, "El email no puede estar vacío");
         }
+        
 
     // Redirección a operaciones.php o muestra de errores
     if (count($errores)>0) {
@@ -330,22 +388,22 @@ function cerrarSesion(){
 function inicio (){
     if (isset($_POST["enviar"])) {
         $operacion = $_POST["enviar"];
+        switch ($operacion) {
+            case 'registro':
+                validarRegistro();
+                break;
+            case 'iniSesion':
+                validarInicioSesion();
+                break;
+            case 'eliminarCuenta':
+                eliminarCuenta();
+                break;
+            case 'cerrarSesion':
+                cerrarSesion();
+                break;
+        }
     }
-
-    switch ($operacion) {
-        case 'registro':
-            validarRegistro();
-            break;
-        case 'iniSesion':
-            validarInicioSesion();
-            break;
-        case 'eliminarCuenta':
-            eliminarCuenta();
-            break;
-        case 'cerrarSesion':
-            cerrarSesion();
-            break;
-    }
+    
 }
 
 inicio ();
