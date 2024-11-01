@@ -26,6 +26,9 @@ function conectar(){
 $conn = conectar();
 
 
+/**
+ * Ejecuta una sentencia SQL para crear un nuevo registro
+ */
 function create($nombre, $apellidos, $fechaNac, $email, $password, $rutaFoto){
     global $conn;
 
@@ -52,6 +55,9 @@ function create($nombre, $apellidos, $fechaNac, $email, $password, $rutaFoto){
 }
 
 
+/**
+ * Ejecuta una sentencia SQL para buscar un registro por su email
+ */
 function read($email){
     global $conn;
 
@@ -66,6 +72,28 @@ function read($email){
 
     } catch(PDOException $e) {
         var_dump("Read Failed: " . $e->getMessage());
+        die();
+    }
+    
+    $conn = null;
+}
+
+
+/**
+ * Ejecuta una sentencia SQL para eliminar un registro por su email
+ */
+function delete($email){
+    global $conn;
+
+    try {
+        $stmt = $conn->prepare("DELETE FROM campus.usuarios WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+
+        return true;
+
+    } catch(PDOException $e) {
+        var_dump("Delete Failed: " . $e->getMessage());
         die();
     }
     
@@ -354,9 +382,14 @@ function validarInicioSesion(){
  * Elima la cuenta del usuario borrando la foto y su archivo .json
  */
 function eliminarCuenta(){
-    if ($_SESSION["rutaFoto"]!="img/porDefecto.png") {
-        unlink($_SESSION["rutaFoto"]);
-    }
+    // Borra la foto
+    $datos = read($_SESSION["email"]);
+    unlink($datos["rutaFoto"]);
+
+    //Borra la cuenta
+    delete($_SESSION["email"]);
+
+    // Borra las sesiones
     unset($_SESSION["nombre"]);
     unset($_SESSION["apellidos"]);
     unset($_SESSION["email"]);

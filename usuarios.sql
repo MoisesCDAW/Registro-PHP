@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 01, 2024 at 09:01 PM
+-- Generation Time: Nov 01, 2024 at 10:03 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -28,7 +28,6 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
   `nombre` varchar(15) NOT NULL,
   `apellidos` varchar(30) NOT NULL,
   `fechaNac` date NOT NULL,
@@ -38,14 +37,6 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `usuarios`
---
-
-INSERT INTO `usuarios` (`id`, `nombre`, `apellidos`, `fechaNac`, `email`, `contrasena`, `rutaFoto`) VALUES
-(1, 'Moises', 'Campos Perdomo', '2003-10-22', 'moises@gmail.com', '$2y$10$diwObVXrjUY9uXwfMpoCduebDgiNYFc3r6nXpHL.12H.RORwLFry2', 'img/moises@gmail.com.png'),
-(2, 'Moises', 'Campos Perdomo', '2003-10-22', 'moises2@gmail.com', '$2y$10$s/jDuy/1T7v6.SzyMiE97ObhY3f8kT5LWkgI0furqfB/Gjs1XzNOy', 'img/moises2@gmail.com.png');
-
---
 -- Indexes for dumped tables
 --
 
@@ -53,17 +44,7 @@ INSERT INTO `usuarios` (`id`, `nombre`, `apellidos`, `fechaNac`, `email`, `contr
 -- Indexes for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  ADD PRIMARY KEY (`email`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
