@@ -27,6 +27,9 @@ SET time_zone = "+00:00";
 -- Table structure for table `usuarios`
 --
 
+create database campus;
+use campus;
+
 CREATE TABLE `usuarios` (
   `nombre` varchar(15) NOT NULL,
   `apellidos` varchar(30) NOT NULL,
