@@ -5,32 +5,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/estilos.css">
     <title>Operaciones</title>
 </head>
 <body>
 
-    <?php 
-        $rutaFoto = "";
+    <div class="cuenta">
+        <h2>Cuenta</h2>
 
-        $datos = read($_SESSION["email"]);
+        <div>
+            <?php 
+                $rutaFoto = "";
 
-        foreach ($datos as $key => $value) {
-            if ($key!="contrasena" && $key!="rutaFoto" && $key !="id") {
-                echo $key." : ".$value."<br>";
-            }
-            if ($key=="rutaFoto") {
-                $rutaFoto = $value;
-            }
-        }
+                $datos = read($_SESSION["email"]);
 
-        echo "<img src='$rutaFoto' width='200px' height='200px''>";  
-    ?>
+                foreach ($datos as $key => $value) {
+                    if ($key!="contrasena" && $key!="rutaFoto" && $key !="id") {
+                        echo ucwords($key)." : ".$value."<br>";
+                    }
+                    if ($key=="rutaFoto") {
+                        $rutaFoto = $value;
+                    }
+                }
 
-    <br>
+                echo "<img src='$rutaFoto' width='200px' height='200px''>";  
+            ?>
+        </div>
 
-    <form action="logica.php" method="post">
-        <button value="eliminarCuenta" name="enviar" onclick="return confirm('¿Estás seguro de borrar la cuenta?')">Eliminar Cuenta</button>
-        <button value="cerrarSesion" name="enviar">Cerrar Sesión</button>
-    </form>
+        <form action="logica.php" method="post">
+            <button value="eliminarCuenta" name="enviar" onclick="return confirm('¿Estás seguro de borrar la cuenta?')">Eliminar Cuenta</button>
+            <button value="cerrarSesion" name="enviar">Cerrar Sesión</button>
+        </form>
+    </div>
+
 </body>
 </html>

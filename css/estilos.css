@@ -13,7 +13,7 @@ body {
 }
 
 .info {
-    width: 30%;
+    width: 25%;
     line-height: 30px;
     margin-left: 5%;
     display: flex;
@@ -93,7 +93,7 @@ body {
     flex-direction: column;
     gap: 10%;
     justify-content: center;
-    width: 30%;
+    width: 25%;
 }
 
 .cont-sec form {
@@ -102,7 +102,7 @@ body {
     gap: 10%;
 }
 
-.cont-sec button {
+.cont-sec button, .cuenta button {
     margin-top: 5%;
     width: 100px;
     height: 35px;
@@ -111,7 +111,7 @@ body {
     border-radius: 5px;
 }
 
-.cont-sec button:hover {
+.cont-sec button:hover, .cuenta button:hover {
     border: none;
     background-color: black;
     color: white;
@@ -122,6 +122,26 @@ body {
     line-height: 200%;
 }
 
+
+.cuenta {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cuenta h2 {
+    padding: 3%;
+}
+
+.cuenta form {
+    padding: 3%;
+}
+
+.cuenta button {
+    width: 150px;
+}
 
 @media screen and (max-width: 880px) {
     body {
