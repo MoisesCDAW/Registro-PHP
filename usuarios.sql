@@ -20,15 +20,14 @@ SET time_zone = "+00:00";
 --
 -- Database: `campus`
 --
+create database campus;
+use campus;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `usuarios`
 --
-
-create database campus;
-use campus;
 
 CREATE TABLE `usuarios` (
   `nombre` varchar(15) NOT NULL,

@@ -1,0 +1,133 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    gap: 10%;
+}
+
+.contenedor {
+    width: 25%;
+    height: 100vh;
+    margin-left: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.datos {
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 3%;
+}
+
+.datos div {
+    height: 12%;
+    display: flex;
+    flex-direction: column;
+    gap: 15%;
+}
+
+.datos input {
+    height: 35px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 3%;
+}
+
+#img {
+    border: none;
+    padding: 0;
+}
+
+.datos button {
+    width: 100px;
+    height: 35px;
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.datos button:hover {
+    border: none;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
+.cont-sec {
+    display: flex;
+    flex-direction: column;
+    gap: 10%;
+    justify-content: center;
+    width: 30%;
+}
+
+.cont-sec form {
+    display: flex;
+    flex-direction: column;
+    gap: 10%;
+}
+
+.cont-sec button {
+    margin-top: 5%;
+    width: 100px;
+    height: 35px;
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.cont-sec button:hover {
+    border: none;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
+.errores {
+    line-height: 200%;
+}
+
+
+@media screen and (max-width: 880px) {
+    body {
+        flex-direction: column;
+        gap: 2%;
+    }
+
+    .contenedor {
+        margin: auto;
+        width: 95%;
+        min-height: 80%;
+    }
+
+    .contenedor input {
+        height: 50px
+    }
+
+    .contenedor button {
+        height: 40px;
+    }
+
+    .cont-sec {
+        margin: auto;
+        width: 95%;
+    }
+
+    .cont-sec form {
+        width: 100%;
+    }
+
+    .errores {
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+}
