@@ -12,7 +12,17 @@ body {
     gap: 10%;
 }
 
-.contenedor {
+.info {
+    width: 30%;
+    line-height: 30px;
+    margin-left: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5%;
+}
+
+.contenedor, .index{
     width: 25%;
     height: 100vh;
     margin-left: 20%;
@@ -21,10 +31,15 @@ body {
     justify-content: center;
 }
 
+.index {
+    margin-left: 0;
+}
+
 .datos {
     height: 90%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 3%;
 }
 
@@ -45,6 +60,17 @@ body {
 #img {
     border: none;
     padding: 0;
+}
+
+#recordar {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+}
+
+#recordar input{
+    width: 20px;
+    height: 20px;
 }
 
 .datos button {
@@ -103,17 +129,32 @@ body {
         gap: 2%;
     }
 
+    .info {
+        width: 95%;
+        margin-top: 5%;
+    }
+
     .contenedor {
         margin: auto;
         width: 95%;
-        min-height: 80%;
+        min-height: 85%;
     }
 
-    .contenedor input {
+    .index {
+        margin: auto;
+        height: 40%;
+        width: 95%;
+    }
+
+    .d_index {
+        gap: 15%;
+    }
+
+    .contenedor input, .index input {
         height: 50px
     }
 
-    .contenedor button {
+    .contenedor button, .index input {
         height: 40px;
     }
 
