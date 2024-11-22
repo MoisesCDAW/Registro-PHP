@@ -40,7 +40,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 3%;
+    gap: 1%;
 }
 
 .datos div {
@@ -51,7 +51,7 @@ body {
 }
 
 .datos input {
-    height: 35px;
+    height: 55px;
     border: 1px solid gray;
     border-radius: 5px;
     padding: 3%;
@@ -170,7 +170,7 @@ body {
         gap: 15%;
     }
 
-    .contenedor input, .index input {
+    .contenedor input{
         height: 50px
     }
 
